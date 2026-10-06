@@ -2,56 +2,92 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Sidebar from "./components/Sidebar";
 import Navbar from "./components/Navbar";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 import Dashboard from "./pages/Dashboard";
 import Transactions from "./pages/Transactions";
 import Categories from "./pages/Categories";
 import Analytics from "./pages/Analytics";
+import Login from "./pages/Login";
+
+
+function Layout({ children }) {
+  return (
+    <div className="flex min-h-screen bg-slate-50">
+
+      <Sidebar />
+
+      <div className="flex flex-1 flex-col">
+
+        <Navbar />
+
+        <main className="flex-1 p-6">
+          {children}
+        </main>
+
+      </div>
+
+    </div>
+  );
+}
 
 
 function App() {
   return (
     <BrowserRouter>
 
-      <div className="flex min-h-screen bg-slate-50">
+      <Routes>
 
-        <Sidebar />
+        <Route
+          path="/login"
+          element={<Login />}
+        />
 
-        <div className="flex flex-1 flex-col">
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Dashboard />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
 
-          <Navbar />
+        <Route
+          path="/transactions"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Transactions />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
 
-          <main className="flex-1 p-6">
+        <Route
+          path="/categories"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Categories />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
 
-            <Routes>
+        <Route
+          path="/analytics"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Analytics />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
 
-              <Route
-                path="/"
-                element={<Dashboard />}
-              />
-
-              <Route
-                path="/transactions"
-                element={<Transactions />}
-              />
-
-              <Route
-                path="/categories"
-                element={<Categories />}
-              />
-
-              <Route
-                path="/analytics"
-                element={<Analytics />}
-              />
-
-            </Routes>
-
-          </main>
-
-        </div>
-
-      </div>
+      </Routes>
 
     </BrowserRouter>
   );
