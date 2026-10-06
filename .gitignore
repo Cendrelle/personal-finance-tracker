@@ -1,0 +1,71 @@
+```gitignore
+# =========================
+# Python / Django
+# =========================
+
+# Virtual environment
+venv/
+.venv/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django
+db.sqlite3
+*.log
+
+# Environment variables / secrets
+.env
+.env.*
+!.env.example
+
+# Django static/media
+staticfiles/
+media/
+
+
+# =========================
+# React / Node
+# =========================
+
+finance-frontend/node_modules/
+finance-frontend/dist/
+finance-frontend/.vite/
+
+# Environment variables
+finance-frontend/.env
+finance-frontend/.env.*
+!finance-frontend/.env.example
+
+
+# =========================
+# IDE / OS
+# =========================
+
+.vscode/
+.idea/
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+
+
+# =========================
+# Generated files
+# =========================
+
+*.pyc
+*.pyo
+*.pyd
+
+# Matplotlib
+*.png
+*.jpg
+*.jpeg
+```
