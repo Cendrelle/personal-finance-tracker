@@ -2,82 +2,8 @@ import { useEffect, useState } from "react";
 import api from "../services/api";
 
 function Categories() {
-  const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await api.get("/categories/");
-        setCategories(response.data);
-      } catch (error) {
-        console.error(
-          "Erreur lors du chargement des catégories :",
-          error
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCategories();
-  }, []);
-
-  return (
-    <div className="space-y-8">
-
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900">
-          Categories
-        </h1>
-
-        <p className="mt-1 text-sm text-slate-500">
-          Organize your transactions by category.
-        </p>
-      </div>
-
-
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-
-        {loading ? (
-          <p className="text-sm text-slate-500">
-            Loading categories...
-          </p>
-        ) : categories.length === 0 ? (
-          <p className="text-sm text-slate-500">
-            No categories found.
-          </p>
-        ) : (
-          categories.map((category) => (
-            <div
-              key={category.id}
-              className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:shadow-md"
-            >
-              <div className="flex items-center gap-4">
-
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-50 text-xl">
-                  🏷️
-                </div>
-
-                <div>
-                  <h2 className="font-semibold text-slate-900">
-                    {category.name}
-                  </h2>
-
-                  <p className="mt-1 text-xs text-slate-500">
-                    Category #{category.id}
-                  </p>
-                </div>
-
-              </div>
-            </div>
-          ))
-        )}
-
-      </div>
-
-    </div>
-  );
+  const [categories, setCategories] = useState([]); const [loading, setLoading] = useState(true); const [error, setError] = useState("");
+  useEffect(() => { api.get("/categories/").then((r) => setCategories(r.data)).catch(() => setError("Could not load categories. Please try again.")).finally(() => setLoading(false)); }, []);
+  return <div className="page-content space-y-6"><div><p className="text-sm font-medium text-purple-600">A place for every little thing</p><h1 className="mt-1 text-2xl font-bold text-slate-900">Categories</h1><p className="mt-2 text-sm text-slate-500">Organize your transactions by category.</p></div>{error && <p role="alert" className="rounded-xl bg-rose-50 p-3 text-sm text-rose-700">{error}</p>}<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{loading ? [1,2,3].map((n) => <div key={n} className="surface h-24 animate-pulse bg-purple-50" />) : categories.length ? categories.map((category, i) => <article key={category.id} className="surface flex items-center gap-4 p-5 transition duration-200 hover:-translate-y-0.5 hover:shadow-lg"><span className={`grid h-12 w-12 place-items-center rounded-2xl text-xl ${["bg-purple-100 text-purple-700", "bg-pink-100 text-pink-700", "bg-emerald-100 text-emerald-700", "bg-orange-100 text-orange-700"][i % 4]}`}>✿</span><div><h2 className="font-semibold text-slate-800">{category.name}</h2><p className="mt-1 text-xs text-slate-500">Your category</p></div></article>) : <div className="surface col-span-full p-12 text-center"><span className="text-3xl">🌸</span><p className="mt-3 font-semibold text-slate-700">No categories found</p><p className="mt-1 text-sm text-slate-500">Create a category to organize your transactions.</p></div>}</div></div>;
 }
-
 export default Categories;

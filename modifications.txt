@@ -1,0 +1,361 @@
+# SWEET MONEY — Frontend Redesign & UI Enhancement
+
+You are working on my existing Personal Finance Tracker project. Your task is to transform its current frontend into a polished, modern, responsive and playful personal finance application called **Sweet Money**.
+
+## 1. IMPORTANT: Analyze the existing project first
+
+Before making any changes:
+
+- Inspect the complete frontend structure.
+- Identify the existing React components, pages, routes, services, hooks and styling system.
+- Identify how the frontend communicates with the Django REST Framework backend.
+- Inspect the existing authentication flow and API endpoints.
+- Identify the existing charts, transaction management features and dashboard calculations.
+- Identify the current dependencies and installed packages.
+
+Do not assume that the project has a particular structure without inspecting it.
+
+**Preserve all existing working features and backend integrations.**
+
+Do not:
+- Rebuild the backend.
+- Change API endpoint names or response formats.
+- Remove existing functionality.
+- Replace real API data with mock data.
+- Break authentication or transaction management.
+- Rewrite the entire application unnecessarily.
+
+If an important modification requires a backend change, explain why before implementing it.
+
+After the analysis, provide a short implementation plan and proceed with the frontend improvements.
+
+## 2. Product identity
+
+Application name: **Sweet Money**
+
+Product concept:
+A personal finance tracker that makes managing money feel simple, friendly and enjoyable.
+
+Visual direction:
+- Cozy anime-inspired aesthetic.
+- Cute but mature enough for a personal finance application.
+- Lavender color palette.
+- Light mode as the default and primary theme.
+- Soft backgrounds, rounded cards and subtle shadows.
+- Small decorative illustrations and kawaii details.
+- Smooth and moderately paced animations.
+- Clean data visualizations.
+
+Avoid:
+- Overly childish layouts.
+- Excessive gradients.
+- Excessive decorative elements.
+- Too many colors competing for attention.
+- Cluttered dashboards.
+- Heavy animations that affect performance.
+
+## 3. Color palette
+
+Use a coherent lavender-inspired light palette.
+
+Suggested colors:
+
+- Primary lavender: #A78BFA
+- Deep lavender: #8B5CF6
+- Light lavender: #EDE9FE
+- Very light lavender background: #F8F6FF
+- White cards: #FFFFFF
+- Main text: #29243A
+- Secondary text: #817A91
+- Soft pink accent: #F4B8D8
+- Soft mint accent: #BDE5D0
+- Soft peach accent: #FFD6B5
+- Borders: #EAE5F3
+
+Use lavender as the primary color. Use pink, mint and peach only for secondary visual accents and financial categories.
+
+Keep sufficient contrast between text and backgrounds.
+
+## 4. Typography
+
+I have already downloaded the fonts I want to use.
+
+Do not download or replace them.
+
+Inspect the project's assets and identify the font files I have added.
+
+- Configure the downloaded font files using @font-face.
+- Use the appropriate font weights.
+- Define reusable typography styles.
+- Apply the fonts consistently throughout the application.
+
+If the font files cannot be located, ask me where they are instead of choosing replacement fonts.
+
+## 5. Glass-Click button design
+
+Create a reusable button component named `GlassButton`.
+
+This component must implement the Glass-Click interaction style.
+
+Rest state:
+- Frosted glass appearance.
+- Semi-transparent background.
+- Thin semi-transparent white border.
+- Subtle backdrop blur.
+- Rounded corners.
+- Soft shadow where appropriate.
+
+Pressed state:
+- Slightly increase background opacity.
+- Increase backdrop blur.
+- Scale down slightly to simulate physical pressure.
+- Make the border slightly more visible.
+
+Suggested CSS behavior:
+
+Rest:
+- background: rgba(255, 255, 255, 0.45)
+- border: 1px solid rgba(255, 255, 255, 0.75)
+- backdrop-filter: blur(8px)
+- transform: scale(1)
+
+Pressed:
+- background: rgba(255, 255, 255, 0.70)
+- backdrop-filter: blur(14px)
+- transform: scale(0.97)
+
+Transition:
+- 200ms ease
+
+Additional requirements:
+- Add a subtle highlight on the upper border.
+- Support hover, focus-visible, disabled and loading states.
+- Ensure keyboard accessibility.
+- Respect prefers-reduced-motion.
+- Provide a graceful fallback when backdrop-filter is unsupported.
+
+Use this style consistently for buttons, including primary actions, while allowing the most important action to have a slightly stronger lavender tint.
+
+Do not make buttons look like ordinary flat Bootstrap buttons.
+
+## 6. Dashboard redesign
+
+Transform the current dashboard into a welcoming finance overview.
+
+Suggested layout:
+
+### Header
+- Greeting: "Good morning!"
+- Current date.
+- Application logo or name.
+- User profile/avatar.
+- Optional small mascot illustration.
+
+### Main balance card
+- Label: "Total Balance"
+- Display the actual available balance.
+- Small trend indicator when meaningful data exists.
+- Soft lavender background or glass-inspired surface.
+- Rounded corners.
+
+### Financial summary
+Display three clear financial indicators:
+- Total Income
+- Total Expenses
+- Available Balance
+
+Use the existing backend data and calculations.
+
+### Spending overview
+- Monthly spending chart.
+- Spending by category.
+- Income versus expenses.
+- Clear labels and readable tooltips.
+
+### Recent transactions
+- Display the latest transactions.
+- Show transaction description, category, date and amount.
+- Distinguish income from expenses.
+- Add a "View all" link.
+
+### Quick actions
+- Add Income
+- Add Expense
+- View Analytics
+
+Use small icons and GlassButton components.
+
+## 7. Transactions page
+
+Improve the transaction management interface.
+
+Requirements:
+- Clean transaction list or table.
+- Clear income and expense indicators.
+- Category icons or subtle category colors.
+- Search field.
+- Date filtering.
+- Category filtering.
+- Income/expense filtering.
+- Edit and delete actions.
+- Responsive mobile layout.
+
+Make sure existing CRUD operations continue to work.
+
+## 8. Add transaction interface
+
+Improve the existing transaction form.
+
+Requirements:
+- Clear distinction between Income and Expense.
+- Amount input with readable formatting.
+- Category selection.
+- Date selection.
+- Description field.
+- Form validation.
+- Clear success and error feedback.
+- Loading state during API requests.
+
+Use a modal, drawer or dedicated page depending on the existing architecture.
+
+The form must continue using the existing API.
+
+## 9. Analytics page
+
+Create a more polished and informative analytics experience.
+
+Preserve existing analytics functionality and improve its presentation.
+
+Include where the existing data supports it:
+- Monthly income and expenses.
+- Spending by category.
+- Monthly spending trends.
+- Income versus expense comparison.
+- Category breakdown.
+- Useful financial indicators.
+
+Charts must:
+- Be responsive.
+- Use the lavender palette.
+- Have readable labels.
+- Include useful tooltips.
+- Display appropriate empty states when there is insufficient data.
+
+Do not invent financial insights or display fake statistics.
+
+## 10. Savings goals
+
+Inspect whether savings goals already exist.
+
+If they do, improve their presentation.
+
+If they do not, do not silently introduce fake functionality or hardcode progress values. Propose the minimum backend and frontend changes required before implementing this feature.
+
+Suggested visual direction:
+- Goal cards.
+- Target amount.
+- Current saved amount.
+- Progress bar.
+- Completion percentage.
+- Small celebratory animation when a goal is reached.
+
+## 11. Animations and interactions
+
+Use the animation library already installed if suitable.
+
+Otherwise, evaluate whether Framer Motion should be added.
+
+Add moderate animations:
+- Cards fade and slide in when the page loads.
+- Charts animate when rendered.
+- Buttons respond naturally to clicks.
+- Modals open and close smoothly.
+- Transaction additions provide subtle visual feedback.
+- Loading states use elegant skeletons.
+- Empty states include friendly illustrations.
+
+Avoid excessive bouncing, flashing or distracting movement.
+
+Respect reduced-motion preferences.
+
+## 12. Responsive design
+
+The application must work well on:
+
+- Mobile phones.
+- Tablets.
+- Desktop screens.
+
+Mobile requirements:
+- Bottom navigation.
+- Compact financial cards.
+- Readable charts.
+- Touch-friendly buttons.
+- No horizontal overflow.
+- Forms that fit small screens.
+
+Desktop requirements:
+- A clean dashboard layout.
+- Sidebar or suitable desktop navigation.
+- Proper spacing and alignment.
+- Good use of available screen width.
+
+## 13. English language
+
+All visible interface text must use simple English at approximately B1 level.
+
+Examples:
+- "Good morning!"
+- "Your balance"
+- "Add income"
+- "Add expense"
+- "Recent transactions"
+- "Monthly spending"
+- "Your savings goals"
+- "View all"
+- "No transactions yet"
+
+Keep labels short and easy to understand.
+
+Do not translate API fields or change backend data structures.
+
+## 14. Code quality
+
+- Use reusable React components.
+- Keep components focused and maintainable.
+- Avoid duplicating styling.
+- Use TypeScript types appropriately.
+- Keep API logic separate from presentation.
+- Reuse existing services and hooks when possible.
+- Avoid unnecessary dependencies.
+- Do not introduce hardcoded financial values.
+- Preserve existing environment variables and API configuration.
+- Do not expose secrets.
+
+## 15. Implementation workflow
+
+Work in small, verifiable steps.
+
+Phase 1: Inspect the existing project and report the architecture.
+
+Phase 2: Define the design tokens, colors, typography and reusable components.
+
+Phase 3: Implement the application layout, navigation and dashboard.
+
+Phase 4: Redesign transactions and transaction forms.
+
+Phase 5: Improve analytics and other existing features.
+
+Phase 6: Improve responsive behavior and animations.
+
+Phase 7: Test all existing workflows and fix regressions.
+
+After each major phase:
+- Explain which files were modified.
+- Explain what changed.
+- Report any issues.
+- Run the appropriate checks or tests.
+
+Do not stop after creating a visual mockup. Implement the actual working interface.
+
+The final result should feel like a polished, cozy, lavender-themed personal finance application called **Sweet Money**, while preserving the existing backend and business logic.

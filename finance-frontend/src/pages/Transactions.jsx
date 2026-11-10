@@ -1,174 +1,28 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import api from "../services/api";
+import GlassButton from "../components/GlassButton";
+import TransactionForm from "../components/TransactionForm";
 
+const amount = (v) => `${new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 }).format(Number(v) || 0)} FCFA`;
 function Transactions() {
-  const [transactions, setTransactions] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        const response = await api.get("/transactions/");
-        setTransactions(response.data);
-      } catch (error) {
-        console.error(
-          "Erreur lors du chargement des transactions :",
-          error
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTransactions();
-  }, []);
-
-  const formatAmount = (amount) => {
-    return new Intl.NumberFormat("fr-FR").format(amount);
-  };
-
-  const formatDate = (date) => {
-    return new Date(date).toLocaleDateString("fr-FR");
-  };
-
-  const getCategoryName = (category) => {
-    const categories = {
-      1: "Alimentation",
-      2: "Transport",
-      3: "Logement",
-      4: "Loisirs",
-      5: "Santé",
-      6: "Abonnements",
-      7: "Salaire",
-    };
-
-    return categories[category] || "Autre";
-  };
-
-  return (
-    <div className="space-y-8">
-
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900">
-          Transactions
-        </h1>
-
-        <p className="mt-1 text-sm text-slate-500">
-          View and manage your financial transactions.
-        </p>
-      </div>
-
-
-      {/* Transactions table */}
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-
-        {loading ? (
-          <div className="p-6 text-sm text-slate-500">
-            Loading transactions...
-          </div>
-        ) : transactions.length === 0 ? (
-          <div className="p-6 text-sm text-slate-500">
-            No transactions found.
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-
-            <table className="w-full">
-
-              <thead className="border-b border-slate-200 bg-slate-50">
-
-                <tr>
-                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
-                    Date
-                  </th>
-
-                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
-                    Category
-                  </th>
-
-                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
-                    Description
-                  </th>
-
-                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
-                    Type
-                  </th>
-
-                  <th className="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
-                    Amount
-                  </th>
-                </tr>
-
-              </thead>
-
-
-              <tbody className="divide-y divide-slate-100">
-
-                {transactions.map((transaction) => (
-
-                  <tr
-                    key={transaction.id}
-                    className="transition hover:bg-slate-50"
-                  >
-
-                    <td className="whitespace-nowrap px-6 py-4 text-sm text-slate-600">
-                      {formatDate(transaction.date)}
-                    </td>
-
-
-                    <td className="px-6 py-4 text-sm font-medium text-slate-900">
-                      {getCategoryName(transaction.category)}
-                    </td>
-
-
-                    <td className="px-6 py-4 text-sm text-slate-500">
-                      {transaction.description || "-"}
-                    </td>
-
-
-                    <td className="px-6 py-4">
-
-                      {transaction.type === "INCOME" ? (
-                        <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-600">
-                          Income
-                        </span>
-                      ) : (
-                        <span className="rounded-full bg-rose-50 px-3 py-1 text-xs font-medium text-rose-600">
-                          Expense
-                        </span>
-                      )}
-
-                    </td>
-
-
-                    <td
-                      className={`whitespace-nowrap px-6 py-4 text-right text-sm font-semibold ${
-                        transaction.type === "INCOME"
-                          ? "text-emerald-600"
-                          : "text-rose-600"
-                      }`}
-                    >
-                      {transaction.type === "INCOME" ? "+" : "-"}
-                      {formatAmount(transaction.amount)} FCFA
-                    </td>
-
-                  </tr>
-
-                ))}
-
-              </tbody>
-
-            </table>
-
-          </div>
-        )}
-
-      </div>
-
-    </div>
-  );
+  const [searchParams, setSearchParams] = useSearchParams(); const [rows, setRows] = useState([]); const [categories, setCategories] = useState([]); const [loading, setLoading] = useState(true); const [error, setError] = useState(""); const [query, setQuery] = useState(""); const [type, setType] = useState(""); const [category, setCategory] = useState(""); const [from, setFrom] = useState(""); const [to, setTo] = useState(""); const [editing, setEditing] = useState(null);
+  const openNew = searchParams.has("new");
+  const load = useCallback(async () => { try { const params = {}; if (type) params.type = type; if (category) params.category = category; if (from) params.date_from = from; if (to) params.date_to = to; const response = await api.get("/transactions/", { params }); setError(""); setRows(Array.isArray(response.data) ? response.data : response.data.results || []); } catch { setError("Could not load transactions. Please try again."); } }, [type, category, from, to]);
+  // Loading and storing this response is the effect of syncing the API filters.
+  // oxlint-disable-next-line react/set-state-in-effect
+  useEffect(() => { load().finally(() => setLoading(false)); }, [load]);
+  // oxlint-disable-next-line react/set-state-in-effect
+  useEffect(() => { api.get("/categories/").then((r) => setCategories(r.data)).catch(() => {}); }, []);
+  const filtered = useMemo(() => rows.filter((r) => `${r.description || ""} ${categories.find((c) => c.id === r.category)?.name || ""}`.toLowerCase().includes(query.toLowerCase())), [rows, categories, query]);
+  const close = () => { setEditing(null); setSearchParams({}); };
+  const saved = () => { close(); load(); };
+  const remove = async (row) => { if (!window.confirm("Delete this transaction?")) return; try { await api.delete(`/transactions/${row.id}/`); load(); } catch { setError("Could not delete this transaction."); } };
+  return <div className="page-content space-y-6"><div className="flex flex-wrap items-end justify-between gap-3"><div><p className="text-sm font-medium text-purple-600">Your money activity</p><h1 className="mt-1 text-2xl font-bold text-slate-900">Transactions</h1><p className="mt-2 text-sm text-slate-500">Search and manage your income and expenses.</p></div><GlassButton variant="primary" onClick={() => setSearchParams({ new: "expense" })}>＋ Add transaction</GlassButton></div>
+    <section className="surface p-4 sm:p-5"><div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5"><div className="sm:col-span-2 xl:col-span-1"><label className="label" htmlFor="search">Search</label><input id="search" className="field" placeholder="Description or category" value={query} onChange={(e) => setQuery(e.target.value)} /></div><div><label className="label" htmlFor="filter-type">Type</label><select id="filter-type" className="field" value={type} onChange={(e) => setType(e.target.value)}><option value="">All types</option><option value="INCOME">Income</option><option value="EXPENSE">Expense</option></select></div><div><label className="label" htmlFor="filter-category">Category</label><select id="filter-category" className="field" value={category} onChange={(e) => setCategory(e.target.value)}><option value="">All categories</option>{categories.map((c) => <option value={c.id} key={c.id}>{c.name}</option>)}</select></div><div><label className="label" htmlFor="date-from">From</label><input id="date-from" className="field" type="date" value={from} onChange={(e) => setFrom(e.target.value)} /></div><div><label className="label" htmlFor="date-to">To</label><input id="date-to" className="field" type="date" value={to} onChange={(e) => setTo(e.target.value)} /></div></div></section>
+    {error && <p role="alert" className="rounded-xl bg-rose-50 p-3 text-sm text-rose-700">{error}</p>}
+    <section className="surface overflow-hidden">{loading ? <div className="space-y-3 p-5">{[1,2,3,4].map((n) => <div key={n} className="h-14 animate-pulse rounded-xl bg-purple-50" />)}</div> : filtered.length ? <><div className="hidden overflow-x-auto md:block"><table className="w-full"><thead className="border-b border-purple-50 bg-purple-50/50"><tr>{["Date", "Category", "Description", "Type", "Amount", "Actions"].map((h) => <th key={h} className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">{h}</th>)}</tr></thead><tbody className="divide-y divide-purple-50">{filtered.map((row) => <tr key={row.id} className="transition hover:bg-purple-50/30"><td className="whitespace-nowrap px-5 py-4 text-sm text-slate-600">{new Date(`${row.date}T00:00:00`).toLocaleDateString("en", { month: "short", day: "numeric", year: "numeric" })}</td><td className="px-5 py-4 text-sm font-medium text-slate-800">{categories.find((c) => c.id === row.category)?.name || "Category"}</td><td className="max-w-56 truncate px-5 py-4 text-sm text-slate-500">{row.description || "—"}</td><td className="px-5 py-4"><span className={`rounded-full px-3 py-1 text-xs font-semibold ${row.type === "INCOME" ? "bg-emerald-50 text-emerald-700" : "bg-purple-50 text-purple-700"}`}>{row.type === "INCOME" ? "Income" : "Expense"}</span></td><td className={`whitespace-nowrap px-5 py-4 text-sm font-bold ${row.type === "INCOME" ? "text-emerald-700" : "text-slate-800"}`}>{row.type === "INCOME" ? "+" : "−"}{amount(row.amount)}</td><td className="whitespace-nowrap px-5 py-4"><button className="mr-3 text-sm font-semibold text-purple-700 hover:underline" onClick={() => setEditing(row)}>Edit</button><button className="text-sm font-semibold text-rose-600 hover:underline" onClick={() => remove(row)}>Delete</button></td></tr>)}</tbody></table></div><div className="divide-y divide-purple-50 md:hidden">{filtered.map((row) => <article key={row.id} className="p-4"><div className="flex items-start justify-between gap-2"><div className="min-w-0"><p className="truncate font-semibold text-slate-800">{row.description || categories.find((c) => c.id === row.category)?.name || "Transaction"}</p><p className="mt-1 text-xs text-slate-500">{categories.find((c) => c.id === row.category)?.name} · {new Date(`${row.date}T00:00:00`).toLocaleDateString("en", { month: "short", day: "numeric" })}</p></div><span className={`shrink-0 text-sm font-bold ${row.type === "INCOME" ? "text-emerald-700" : "text-slate-800"}`}>{row.type === "INCOME" ? "+" : "−"}{amount(row.amount)}</span></div><div className="mt-3 flex gap-4"><button className="text-sm font-semibold text-purple-700" onClick={() => setEditing(row)}>Edit</button><button className="text-sm font-semibold text-rose-600" onClick={() => remove(row)}>Delete</button></div></article>)}</div></> : <div className="px-5 py-14 text-center"><span className="text-3xl" aria-hidden="true">🌷</span><p className="mt-3 font-semibold text-slate-700">No transactions found</p><p className="mt-1 text-sm text-slate-500">Try a different search or add a transaction.</p></div>}</section>
+    {(openNew || editing) && <div className="fixed inset-0 z-40 grid place-items-center overflow-y-auto bg-slate-900/30 p-4 backdrop-blur-sm" onMouseDown={(e) => { if (e.target === e.currentTarget) close(); }}><section role="dialog" aria-modal="true" aria-labelledby="transaction-title" className="surface my-auto w-full max-w-lg p-5 sm:p-7"><div className="mb-5 flex items-start justify-between"><div><h2 id="transaction-title" className="text-xl font-bold text-slate-800">{editing ? "Edit transaction" : "Add a transaction"}</h2><p className="mt-1 text-sm text-slate-500">Keep track of every little thing.</p></div><button onClick={close} className="rounded-full px-2 py-1 text-slate-500 hover:bg-purple-50" aria-label="Close">×</button></div><TransactionForm key={editing?.id || searchParams.get("new")} transaction={editing} defaultType={searchParams.get("new")} onSaved={saved} onCancel={close} /></section></div>}
+  </div>;
 }
-
 export default Transactions;
-

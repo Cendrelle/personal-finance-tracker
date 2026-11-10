@@ -1,12 +1,49 @@
 @import "tailwindcss";
 
-:root {
-  font-family: Inter, system-ui, sans-serif;
-  color: #18181b;
-  background: #f8fafc;
+@font-face {
+  font-family: "Starborn";
+  src: url("/fonts/Starborn.otf") format("opentype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
 }
 
-body {
-  margin: 0;
-  min-width: 320px;
+:root {
+  font-family: system-ui, sans-serif;
+  color: #29243a;
+  background: #f8f6ff;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  --lavender: #8b5cf6;
+  --lavender-light: #ede9fe;
+  --muted: #817a91;
+  --border: #eae5f3;
 }
+
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; min-height: 100vh; background: #f8f6ff; }
+button, input, select, textarea { font: inherit; }
+.app-shell { min-height: 100vh; }
+h1, h2, .brand-wordmark { font-family: "Starborn", system-ui, sans-serif; font-weight: 400; }
+.app-main { min-width: 0; }
+.page-content { width: min(100%, 1440px); margin: 0 auto; padding: 30px clamp(18px, 3vw, 44px) 48px; }
+.surface { border: 1px solid var(--border); background: rgba(255,255,255,.88); border-radius: 22px; box-shadow: 0 8px 28px rgba(63,43,103,.055); }
+.glass-button { position: relative; isolation: isolate; display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 44px; border: 1px solid rgba(255,255,255,.78); border-radius: 14px; padding: 10px 17px; color: #55417e; background: rgba(255,255,255,.48); box-shadow: 0 5px 16px rgba(79,58,126,.1), inset 0 1px 0 rgba(255,255,255,.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); cursor: pointer; transition: transform 200ms ease, background 200ms ease, box-shadow 200ms ease, border-color 200ms ease; }
+.glass-button::before { content: ""; position: absolute; inset: 0 12% auto; height: 1px; background: rgba(255,255,255,.95); z-index: -1; }
+.glass-button:hover:not(:disabled) { background: rgba(255,255,255,.7); box-shadow: 0 7px 20px rgba(79,58,126,.15), inset 0 1px 0 white; }
+.glass-button:active:not(:disabled) { background: rgba(255,255,255,.78); backdrop-filter: blur(14px); transform: scale(.97); }
+.glass-button:focus-visible { outline: 3px solid rgba(139,92,246,.35); outline-offset: 2px; }
+.glass-button:disabled { cursor: not-allowed; opacity: .55; }
+.glass-button--primary { color: white; border-color: rgba(255,255,255,.55); background: rgba(139,92,246,.88); box-shadow: 0 8px 20px rgba(139,92,246,.22), inset 0 1px 0 rgba(255,255,255,.35); }
+.glass-button--primary:hover:not(:disabled) { background: rgba(124,83,227,.96); }
+.glass-button--small { min-height: 38px; padding: 8px 12px; font-size: .88rem; }
+.glass-button--danger { color: #be456a; }
+.field { width: 100%; min-height: 44px; border: 1px solid var(--border); border-radius: 12px; background: #fff; padding: 10px 13px; color: #29243a; outline: none; }
+.field:focus { border-color: #a78bfa; box-shadow: 0 0 0 3px rgba(167,139,250,.16); }
+.label { display: block; margin-bottom: 7px; color: #625b70; font-size: .88rem; font-weight: 600; }
+.mobile-nav { display: none; }
+@media (max-width: 760px) {
+  .page-content { padding: 22px 16px 100px; }
+  .mobile-nav { position: fixed; z-index: 30; display: grid; grid-template-columns: repeat(4,1fr); inset: auto 0 0; padding: 9px 8px calc(9px + env(safe-area-inset-bottom)); border-top: 1px solid var(--border); background: rgba(255,255,255,.94); backdrop-filter: blur(16px); }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; } }

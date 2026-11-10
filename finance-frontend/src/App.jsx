@@ -13,15 +13,15 @@ import Login from "./pages/Login";
 
 function Layout({ children }) {
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <div className="app-shell flex bg-[#f8f6ff]">
 
       <Sidebar />
 
-      <div className="flex flex-1 flex-col">
+      <div className="app-main flex flex-1 flex-col">
 
         <Navbar />
 
-        <main className="flex-1 p-6">
+        <main className="flex-1">
           {children}
         </main>
 
